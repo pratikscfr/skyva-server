@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const constants = require('./utils/constants');
 
+const routes = require('./routes/routes');
+
 const app = express();
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@skyva.rgjb3.mongodb.net/userData?retryWrites=true&w=majority`;
 
@@ -27,6 +29,9 @@ db.on('open', () => {
 db.on('error', () => {
   console.log('Error Connecting to MongoDb Database');
 });
+
+app.use(express.json());
+app.use(routes);
 
 app.listen(constants.PORT_NUMBER, () => {
   console.log(`Running on port ${constants.PORT_NUMBER}`);
