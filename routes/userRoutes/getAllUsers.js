@@ -1,14 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../../models/userSchema');
+const userController = require('../../controllers/userController');
 
-router.get('/', async (req, res, next) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    res.send('Error' + error);
-  }
-});
+router.get('/', userController.getAllUsers);
 
 module.exports = router;
