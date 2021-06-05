@@ -14,7 +14,7 @@ exports.addNewUser = async (req, res, next) => {
   }
 };
 
-exports.getAllUsers = async (req, res, next) => {
+exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
     res.json(users);
