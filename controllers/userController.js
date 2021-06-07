@@ -15,7 +15,15 @@ exports.addNewUser = async (req, res, next) => {
     .catch((err) => res.status(500).json({ message: err }));
 };
 
-exports.getUsers = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
+  User.find({ email: req.params.email })
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => res.status(404).json({ message: err }));
+};
+
+exports.fetchUsers = async (req, res, next) => {
   User.find()
     .then((users) => {
       res.status(200).json(users);
