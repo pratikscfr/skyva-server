@@ -1,38 +1,15 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const constants = require('./utils/constants');
-
-const routes = require('./routes/routes');
-
+require("dotenv").config();
+const express = require("express");
+const morgan = require("morgan");
+const routes = require("./routes/routes");
+const cors = require("cors");
+express.urlencoded({ extended: false });
 const app = express();
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@skyva.rgjb3.mongodb.net/userData?retryWrites=true&w=majority`;
 
-try {
-  mongoose.connect(
-    uri,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    () => {
-      console.log('Mongoose Connected');
-    }
-  );
-} catch (e) {
-  console.log('Mongoose could not connect, Error: ' + e);
-}
-
-const db = mongoose.connection;
-
-db.on('open', () => {
-  console.log('Connected to Database');
-});
-
-db.on('error', () => {
-  console.log('Error Connecting to MongoDb Database');
-});
+app.use(morgan("dev"));
+app.use(cors());
 
 app.use(express.json());
 app.use(routes);
 
-app.listen(constants.PORT_NUMBER, () => {
-  console.log(`Running on port ${constants.PORT_NUMBER}`);
-});
+module.exports = app;
