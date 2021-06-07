@@ -1,4 +1,4 @@
-const User = require('../models/userSchema');
+const User = require("../models/userSchema");
 
 exports.addNewUser = async (req, res, next) => {
   const user = new User({
@@ -34,12 +34,35 @@ exports.fetchUsers = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   const email = req.body.email;
   if (!email) {
-    res.status(402).json({ message: 'email required' });
+    res.status(402).json({ message: "email required" });
   } else {
     User.deleteOne({ email: email })
       .then(() => {
-        res.status(200).json({ message: 'sucessfully deleted the user' });
+        res.status(200).json({ message: "sucessfully deleted the user" });
       })
       .catch((err) => res.status(500).json({ message: err }));
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { name, address, email } = req.body;
+    if (!email) {
+      res.status(402).json({ message: "email required" });
+    }
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    user.name = name;
+    user.address = address;
+    user.email = email;
+
+    await user.save();
+    return res.json(user);
+  } catch (error) {
+    res.status(500).send("Error" + error);
   }
 };
