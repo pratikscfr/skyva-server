@@ -42,18 +42,20 @@ exports.updateUser = async (req, res, next) => {
     if (!email) {
       res.status(402).json({ message: "email required" });
     }
-    const user = await User.findOne({ email });
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (address) updateFields.address = address;
+    const user = await User.findOneAndUpdate(
+      { email },
+      { $set: updateFields },
+      { new: true }
+    );
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    user.name = name;
-    user.address = address;
-    user.email = email;
-
-    await user.save();
-    return res.json(user);
+    return res.status(200).json(user);
   } catch (error) {
     res.status(500).send("Error" + error);
   }
