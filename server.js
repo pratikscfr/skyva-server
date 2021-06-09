@@ -7,7 +7,7 @@ const constants = require('./utils/constants');
 //const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@skyva.rgjb3.mongodb.net/userData?retryWrites=true&w=majority`;
 const uri = 'mongodb://localhost:27017/Ecell';
 const server = http.createServer(app);
-const port = constants.PORT_NUMBER || 3000;
+const port = process.env.PORT || constants.PORT_NUMBER;
 
 mongoose
 	.connect(uri, {
