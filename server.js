@@ -1,4 +1,4 @@
-//require('dotenv').config();
+// require('dotenv').config();
 const app = require('./app');
 const http = require('http');
 const mongoose = require('mongoose');
@@ -10,7 +10,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@sky
 const server = http.createServer(app);
 const port = process.env.PORT || constants.PORT_NUMBER;
 
-const conn = mongoose
+mongoose
   .connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
