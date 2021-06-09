@@ -6,8 +6,6 @@ exports.uploadImg = async (req, res, next) => {
   const image = req.file;
   console.log(image);
   console.log(rootDir);
-  /* res.sendFile(
-    path.join(rootDir, 'uploads', 'images', `test-${image.originalname}`)
-  ); */
-  res.send('done');
+  res.sendFile(path.join(rootDir, 'uploads', 'images', `test.jpg`));
+  //res.send('done');
 };
