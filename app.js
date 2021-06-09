@@ -1,5 +1,5 @@
 const express = require('express');
-const morgan = require('morgan');
+//const morgan = require('morgan');
 const routes = require('./routes/routes');
 const cors = require('cors');
 const multer = require('multer');
