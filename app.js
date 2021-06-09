@@ -1,5 +1,5 @@
 const express = require('express');
-//const morgan = require('morgan');
+const morgan = require('morgan');
 const routes = require('./routes/routes');
 const cors = require('cors');
 const multer = require('multer');
@@ -20,7 +20,7 @@ const fileStorageConfig = multer.diskStorage({
 express.urlencoded({ extended: false });
 const app = express();
 
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(cors());
 app.use(methodOverride('_method'));
 app.use(multer({ storage: fileStorageConfig }).single('image'));
