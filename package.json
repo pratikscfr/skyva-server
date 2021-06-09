@@ -10,10 +10,12 @@
   "author": "Hrishit",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongodb": "^3.6.9",
-    "mongoose": "^5.12.12"
+    "mongoose": "^5.12.12",
+    "twilio": "^3.63.1"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
