@@ -17,6 +17,7 @@ exports.sendOtpSms = (req, res, next) => {
 	//   VAf804f75894571cbfa97535a816270ac1;
 	const ph = `+${countryCode}${phoneNo}`;
 	console.log(ph);
+	console.log(authToken);
 
 	client.verify
 		.services(constant.TWILIO_SERVICE_ID)
