@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const app = require('./app');
 const http = require('http');
 const mongoose = require('mongoose');
@@ -10,17 +10,17 @@ const server = http.createServer(app);
 const port = process.env.PORT || constants.PORT_NUMBER;
 
 mongoose
-	.connect(uri, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-		useCreateIndex: true,
-	})
-	.then((res) => {
-		console.log('Connected to database, Server Starting');
-		server.listen(port, () => {
-			console.log(`Listening at PORT:${port}`);
-		});
-	})
-	.catch((err) => {
-		console.log(err);
-	});
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .then((res) => {
+    console.log('Connected to database, Server Starting');
+    server.listen(port, () => {
+      console.log(`Listening at PORT:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
