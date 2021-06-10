@@ -1,4 +1,3 @@
-// require('dotenv').config();
 const PORT_NUMBER = 4000;
 
 module.exports = {

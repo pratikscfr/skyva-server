@@ -1,4 +1,3 @@
-// require('dotenv').config();
 const constant = require('../utils/constants');
 const accountSid = constant.TWILIO_ACCOUNT_SID;
 const authToken = constant.TWILIO_AUTH_TOKEN;
