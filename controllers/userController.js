@@ -1,18 +1,31 @@
 const User = require('../models/userSchema');
+const jwt = require('jsonwebtoken');
 
 exports.addNewUser = async (req, res, next) => {
-	const user = new User({
-		name: req.body.name,
-		address: req.body.address,
-		email: req.body.email,
-	});
+	try{
+		const user = new User({
+			name: req.body.name,
+			address: req.body.address,
+			email: req.body.email,
+			countryCode: req.body.countryCode,
+			phone: req.body.phone
+		});
 
-	user
-		.save()
-		.then((data) => {
-			res.status(200).json(data);
-		})
-		.catch((err) => res.status(500).json({ message: err }));
+		await user.save();
+		//return jwt
+		const payload = {
+			user: {
+				id: user.id,
+			},
+		};
+		jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
+			if (err) throw err;
+			return res.json({ token });
+		});
+	}
+	catch(err){
+		return res.status(500).json({ message: err });
+	}
 };
 
 exports.getUser = async (req, res, next) => {
@@ -46,13 +59,15 @@ exports.delete = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
 	try {
-		const { name, address, email } = req.body;
+		const { name, address, email, countryCode, phone } = req.body;
 		if (!email) {
 			res.status(402).json({ message: 'email required' });
 		}
 		const updateFields = {};
 		if (name) updateFields.name = name;
 		if (address) updateFields.address = address;
+		if (countryCode) updateFields.countryCode = countryCode;
+		if (phone) updateFields.phone = phone;
 		const user = await User.findOneAndUpdate(
 			{ email },
 			{ $set: updateFields },
