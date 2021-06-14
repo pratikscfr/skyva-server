@@ -10,6 +10,7 @@ const port = process.env.PORT || constants.PORT_NUMBER;
 
 mongoose
   .connect(uri, {
+    useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
