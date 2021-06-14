@@ -2,84 +2,142 @@ const User = require('../models/userSchema');
 const jwt = require('jsonwebtoken');
 
 exports.addNewUser = async (req, res, next) => {
-	try{
-		const user = new User({
-			name: req.body.name,
-			address: req.body.address,
-			email: req.body.email,
-			countryCode: req.body.countryCode,
-			phone: req.body.phone
-		});
+  try {
+    const { name, address, email, countryCode, phone } = req.body;
+    let user = await User.findOne({ email });
 
-		await user.save();
-		//return jwt
-		const payload = {
-			user: {
-				id: user.id,
-			},
-		};
-		jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
-			if (err) throw err;
-			return res.json({ token });
-		});
-	}
-	catch(err){
-		return res.status(500).json({ message: err });
-	}
+    if (user) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    user = new User({
+      name,
+      address,
+      email,
+      countryCode,
+      phone,
+    });
+
+    await user.save();
+
+    //return jwt
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 36000 },
+      (err, token) => {
+        if (err) throw err;
+        return res.json({ token });
+      }
+    );
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+exports.loginUser = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    if (!email) {
+      return res.status(402).json({ message: 'email required' });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    //return jwt
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 36000 },
+      (err, token) => {
+        if (err) throw err;
+        return res.json({ token });
+      }
+    );
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
 };
 
 exports.getUser = async (req, res, next) => {
-	User.find({ email: req.params.email })
-		.then((users) => {
-			res.status(200).json(users);
-		})
-		.catch((err) => res.status(404).json({ message: err }));
+  try {
+    const email = req.params.email;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 exports.fetchUsers = async (req, res, next) => {
-	User.find()
-		.then((users) => {
-			res.status(200).json(users);
-		})
-		.catch((err) => res.status(404).json({ message: err }));
+  try {
+    const users = await User.find();
+    return res.status(200).json(users);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 exports.delete = async (req, res, next) => {
-	const email = req.body.email;
-	if (!email) {
-		res.status(402).json({ message: 'email required' });
-	} else {
-		User.deleteOne({ email: email })
-			.then(() => {
-				res.status(200).json({ message: 'sucessfully deleted the user' });
-			})
-			.catch((err) => res.status(500).json({ message: err }));
-	}
+  try {
+    const email = req.body.email;
+    if (!email) {
+      return res.status(402).json({ message: 'email required' });
+    }
+
+    const user = await User.findOneAndDelete({ email: email });
+
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'sucessfully deleted the user' });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 exports.updateUser = async (req, res, next) => {
-	try {
-		const { name, address, email, countryCode, phone } = req.body;
-		if (!email) {
-			res.status(402).json({ message: 'email required' });
-		}
-		const updateFields = {};
-		if (name) updateFields.name = name;
-		if (address) updateFields.address = address;
-		if (countryCode) updateFields.countryCode = countryCode;
-		if (phone) updateFields.phone = phone;
-		const user = await User.findOneAndUpdate(
-			{ email },
-			{ $set: updateFields },
-			{ new: true },
-		);
+  try {
+    const { name, address, email, countryCode, phone } = req.body;
+    if (!email) {
+      res.status(402).json({ message: 'email required' });
+    }
 
-		if (!user) {
-			return res.status(400).json({ message: 'User not found' });
-		}
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (address) updateFields.address = address;
+    if (countryCode) updateFields.countryCode = countryCode;
+    if (phone) updateFields.phone = phone;
+    const user = await User.findOneAndUpdate(
+      { email },
+      { $set: updateFields },
+      { new: true }
+    );
 
-		return res.status(200).json(user);
-	} catch (error) {
-		res.status(500).send('Error' + error);
-	}
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: err.message });
+  }
 };
