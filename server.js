@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const constants = require('./utils/constants');
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@skyva.rgjb3.mongodb.net/userData?retryWrites=true&w=majority`;
-//const uri = 'mongodb://localhost:27017/db';
 const server = http.createServer(app);
 const port = process.env.PORT || constants.PORT_NUMBER;
 
@@ -14,6 +13,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then((res) => {
     console.log('Connected to database, Server Starting');
