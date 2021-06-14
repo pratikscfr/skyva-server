@@ -1,3 +1,5 @@
+const rootDir = require('../utils/path');
+const path = require('path');
 const User = require('../models/userSchema');
 const jwt = require('jsonwebtoken');
 
@@ -140,4 +142,17 @@ exports.updateUser = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({ message: err.message });
   }
+};
+
+exports.getFile = async (req, res, next) => {
+  User.find({ email: req.params.email })
+    .then((user) => {
+      res
+        .status(200)
+        .sendFile(
+          path.join(rootDir, 'uploads', 'images', `${user[0].imageURL}`)
+        );
+    })
+    .catch((err) => res.status(404).json({ message: 'user not found' }));
+  return res.status(500).json({ message: err.message });
 };
