@@ -118,7 +118,7 @@ exports.delete = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
-    const { name, address, email, countryCode, phone } = req.body;
+    const { name, address, email, countryCode, phone, fcmToken } = req.body;
     if (!email) {
       res.status(402).json({ message: 'email required' });
     }
@@ -128,6 +128,7 @@ exports.updateUser = async (req, res, next) => {
     if (address) updateFields.address = address;
     if (countryCode) updateFields.countryCode = countryCode;
     if (phone) updateFields.phone = phone;
+    if (fcmToken) updateFields.fcmToken = fcmToken;
     const user = await User.findOneAndUpdate(
       { email },
       { $set: updateFields },
@@ -154,5 +155,12 @@ exports.getFile = async (req, res, next) => {
         );
     })
     .catch((err) => res.status(404).json({ message: 'user not found' }));
-  return res.status(500).json({ message: err.message });
+};
+
+exports.getfcmToken = async (req, res, next) => {
+  User.find({ email: req.params.email })
+    .then((user) => {
+      res.status(200).json({ fcmToken: user[0].fcmToken });
+    })
+    .catch((err) => res.status(404).json({ message: 'user not found' }));
 };
